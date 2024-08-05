@@ -2,8 +2,12 @@
   "name": "idealtaxbackend",
   "version": "1.0.0",
   "main": "endpointCRM.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node endpointCRM.js",
     "dev": "nodemon endpointCRM.js"
   },
   "author": "",

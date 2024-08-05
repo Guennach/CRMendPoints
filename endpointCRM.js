@@ -50,7 +50,7 @@ app.post("/CRMendPoint", async (req, res) => {
 
 app.post("/test", (req, res) => {
   try {
-      res.status(200).json({ message: "Test post endpoint" });
+    res.status(200).json({ message: "Test post endpoint" });
   } catch (error) {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
