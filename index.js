@@ -41,7 +41,7 @@ app.post("/CRMendPoint", async (req, res) => {
       key: "value",
     };
     var data = { ...req.body, ...key };
-    const response = await axios.post("http://127.0.0.1:3000/test", data);
+    const response = await axios.post("https://cr-mend-points.vercel.app/test", data);
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).json({ error: "An error occurred while fetching data" });
