@@ -90,7 +90,7 @@ app.post("/CRMendPoint", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json(leadData);
+    res.status(500).json({ message: `ERROR >> ${process.env.API_KEY}` });
   }
 });
 
