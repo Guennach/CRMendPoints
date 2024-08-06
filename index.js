@@ -90,7 +90,7 @@ app.post("/CRMendPoint", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching data" });
+    res.status(500).json(leadData);
   }
 });
 
