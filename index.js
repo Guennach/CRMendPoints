@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.post("/test", (req, res) => {
   try {
-    res.status(200).json({ message: "Test post endpoint" });
+    res.status(200).json({ message: `Test endpoint 200 SUCCESS ${process.env.TEST_ENV}` });
   } catch (error) {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
