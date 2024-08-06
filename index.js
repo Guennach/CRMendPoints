@@ -86,11 +86,15 @@ app.post("/CRMendPoint", async (req, res) => {
             officerName: officerNameMatch ? officerNameMatch[1] : null,
           };
           res.status(200).json(parsedData);
-        });
+        }); 
       }
+    }).catch((error) => {
+      console.error("Fetch error:", error);
+      res.status(500).json({ error: "An error occurred while fetching data" });
     });
   } catch (error) {
-    res.status(500).json({ message: `ERROR >> ${process.env.API_KEY}` });
+    console.error("Server error:", error);
+    res.status(500).json({ error: "An error occurred while processing the request" });
   }
 });
 
