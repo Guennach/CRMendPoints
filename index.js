@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -37,8 +39,7 @@ app.post("/CRMendPoint", async (req, res) => {
       HOME_PHONE: phone,
     } = req.body;
 
-
-    if (!firstName || !lastName || !email || !state || !userIP || !phone) {
+    if (!firstName || !lastName || !email || !state ||  !phone) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
