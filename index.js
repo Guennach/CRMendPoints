@@ -3,7 +3,6 @@ require('dotenv').config(); // Load environment variables from .env file
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const fetch = require("node-fetch"); // Import node-fetch
 
 var   bodyParser = require("body-parser");
 
@@ -70,31 +69,27 @@ app.post("/CRMendPoint", async (req, res) => {
     const queryParams = new URLSearchParams(leadData).toString();
     const crmEndpoint = `https://ideal.irslogics.com/postLead.aspx?${queryParams}`;
 
-    fetch(crmEndpoint, {
-      method: "GET",
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1) {
+    axios.get(crmEndpoint)
+    .then((response) => {
+      const contentType = response.headers['content-type'];
+      if (contentType && contentType.indexOf('application/json') !== -1) {
         res.status(200).json(response.data);
       } else {
-        return response.text().then((data) => {
-          // Parse the response text
-          const caseIDMatch = data.match(/CaseID:\s*(\d+)/);
-          const officerNameMatch = data.match(/SetOfficerName:\s*([\w\s]+)/);
-          const parsedData = {
-            message: "Lead imported successfully",
-            caseID: caseIDMatch ? caseIDMatch[1] : null,
-            officerName: officerNameMatch ? officerNameMatch[1] : null,
-          };
-          res.status(200).json(parsedData);
-        }); 
+        const data = response.data;
+        // Parse the response text
+        const caseIDMatch = data.match(/CaseID:\s*(\d+)/);
+        const officerNameMatch = data.match(/SetOfficerName:\s*([\w\s]+)/);
+        const parsedData = {
+          message: 'Lead imported successfully',
+          caseID: caseIDMatch ? caseIDMatch[1] : null,
+          officerName: officerNameMatch ? officerNameMatch[1] : null,
+        };
+        res.status(200).json(parsedData);
       }
-    }).catch((error) => {
-      console.error("Fetch error:", error);
-      res.status(500).json({ error: "An error occurred while fetching data" });
+    })
+    .catch((error) => {
+      console.error('Fetch error:', error);
+      res.status(500).json({ error: 'An error occurred while fetching data' });
     });
   } catch (error) {
     console.error("Server error:", error);
