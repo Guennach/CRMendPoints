@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 const checkallowedhost = (req, res, next) => {
-  const allowedHost = ["localhost", "127.0.0.1", "freshstartagents.com", "irshelpers.com", "itistaxtime.com"];
+  const allowedHost = ["localhost", "127.0.0.1", "freshstartagents.com", "irshelpers.com", "itistaxtime.com", "cr-mend-points.vercel.app"];
   const host = req.get("host").split(":")[0];
   if (allowedHost.includes(host)) {
     next();
