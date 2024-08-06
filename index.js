@@ -9,6 +9,13 @@ app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(express.json());
 
+app.post("/test", (req, res) => {
+  try {
+    res.status(200).json({ message: "Test post endpoint" });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 app.post("/CRMendPoint", async (req, res) => {
   try {
@@ -57,7 +64,7 @@ app.post("/CRMendPoint", async (req, res) => {
 
     const queryParams = new URLSearchParams(leadData).toString();
     const crmEndpoint = `https://ideal.irslogics.com/postLead.aspx?${queryParams}`;
-    
+
     fetch(crmEndpoint, {
       method: "GET",
     }).then((response) => {
