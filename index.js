@@ -3,7 +3,11 @@ require('dotenv').config(); // Load environment variables from .env file
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const fetch = require("node-fetch"); // Import node-fetch
+
 var   bodyParser = require("body-parser");
+
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
