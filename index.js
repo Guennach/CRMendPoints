@@ -92,7 +92,7 @@ app.post("/CRMendPoint", async (req, res) => {
       };
 
       const queryParams = new URLSearchParams(leadData).toString();
-      const crmEndpoint = `https://ideal.irslogics.com/postLead.aspx?${queryParams}`;
+      const crmEndpoint = `${process.env.URL}?${queryParams}`;
 
       axios
         .get(crmEndpoint)
