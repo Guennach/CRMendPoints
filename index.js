@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const axios = require("axios");
+const qs = require("qs"); // Require the qs module
 
 var bodyParser = require("body-parser");
 
@@ -129,6 +130,119 @@ app.post("/CRMendPoint", async (req, res) => {
       });
   }
 });
+
+
+
+
+const sendVerificationSms = (phone) =>{
+  const serviceName = process.env.SERVICE_NAME;
+  const url = `https://verify.twilio.com/v2/Services/${serviceName}/Verifications`;
+  const data = qs.stringify({
+    'To': phone,
+    'Channel': 'sms'
+  });
+  const auth = {
+    username: process.env.USER,
+    password: process.env.PASS
+  };
+  console.log('Sending verification SMS to:', phone);
+  console.log('Service name:', serviceName);
+  console.log('URL:', url);
+  console.log('Data:', data);
+  console.log('Auth:', auth);
+  axios.post(url, data, {
+    auth: auth,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Request data:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    console.error('An error occurred during the request.');
+  });
+}
+
+const CheckVerficationOTP = (code, phone) =>{
+  const serviceName = process.env.SERVICE_NAME;
+  const url = `https://verify.twilio.com/v2/Services/${serviceName}/VerificationCheck`;
+  const data = qs.stringify({
+    'To': phone,
+    'Code': code
+  });
+  const auth = {
+    username: process.env.USER,
+    password: process.env.PASS
+  };
+ 
+  axios.post(url, data, {
+    auth: auth,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+  .then(response => {
+    console.log(response.data);
+    console.log('Verification successful:', code);
+    console.log('Collected data:', collected_data);
+
+  })
+  .catch(error => {
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Request data:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    console.error('An error occurred during the request.');
+  }); 
+}
+
+
+
+app.post("/sendVerificationSms", (req, res) => {
+  try {
+    const { phone } = req.body;
+    sendVerificationSms(phone);
+    res.status(200).json({ message: "Verification SMS sent successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: "An error occurred while sending SMS" });
+  }
+});
+
+app.post("/CheckVerficationOTP", (req, res) => {
+  try {
+    const { code, phone } = req.body;
+    if (!code) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    CheckVerficationOTP(code, phone);
+    res.status(200).json({ message: "Verification OTP checked successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while checking OTP" });
+  }
+});
+
+
+
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
