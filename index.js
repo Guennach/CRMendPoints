@@ -136,7 +136,7 @@ app.post("/CRMendPoint", async (req, res) => {
 
 const sendVerificationSms = (phone) =>{
   const serviceName = process.env.SERVICE_NAME;
-  const url = `https://verify.twilio.com/v2/Services/${serviceName}/Verifications`;
+  const url = `${process.env.TWILIO_URL}/${serviceName}/Verifications`;
   const data = qs.stringify({
     'To': phone,
     'Channel': 'sms'
@@ -175,7 +175,7 @@ const sendVerificationSms = (phone) =>{
 
 const CheckVerficationOTP = (code, phone) =>{
   const serviceName = process.env.SERVICE_NAME;
-  const url = `https://verify.twilio.com/v2/Services/${serviceName}/VerificationCheck`;
+  const url = `${process.env.TWILIO_URL}/${serviceName}/VerificationCheck`;
   const data = qs.stringify({
     'To': phone,
     'Code': code
