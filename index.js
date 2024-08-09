@@ -15,26 +15,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 
-// const checkallowedhost = (req, res, next) => {
-//   const allowedHost = [
-//     "localhost",
-//     "127.0.0.1",
-//     "freshstartagents.com",
-//     "irshelpers.com",
-//     "itistaxtime.com",
-//     "cr-mend-points.vercel.app",
-//   ];
+const checkallowedhost = (req, res, next) => {
+  const allowedHost = [
+    "localhost",
+    "127.0.0.1",
+    "freshstartagents.com",
+    "irshelpers.com",
+    "itistaxtime.com",
+    "cr-mend-points-eta.vercel.app",
+  ];
 
-//   const host = req.get("host").split(":")[0];
+  const host = req.get("host").split(":")[0];
 
-//   if (allowedHost.includes(host)) {
-//     next();
-//   } else {
-//     res.status(403).json({ error: "Not allowed" });
-//   }
-// };
+  if (allowedHost.includes(host)) {
+    next();
+  } else {
+    res.status(403).json({ error: "Not allowed" });
+  }
+};
 
-// app.use(checkallowedhost);
+app.use(checkallowedhost);
 
 app.post("/test", (req, res) => {
   try {
@@ -48,7 +48,7 @@ app.post("/test", (req, res) => {
 
 app.post("/CRMendPoint", async (req, res) => {
   try {
-    // checkallowedhost(req, res, () => {
+    checkallowedhost(req, res, () => {
       if (!req.body) {
         return res.status(400).json({ error: "No request body" });
       }
@@ -119,7 +119,7 @@ app.post("/CRMendPoint", async (req, res) => {
             .status(500)
             .json({ error: "An error occurred while fetching data" });
         });
-    // });
+    });
   } catch (error) {
     console.error("Server error:", error);
     res
