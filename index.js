@@ -48,7 +48,7 @@ app.post("/test", (req, res) => {
 
 app.post("/CRMendPoint", async (req, res) => {
   try {
-    checkallowedhost(req, res, () => {
+    // checkallowedhost(req, res, () => {
       if (!req.body) {
         return res.status(400).json({ error: "No request body" });
       }
@@ -119,7 +119,7 @@ app.post("/CRMendPoint", async (req, res) => {
             .status(500)
             .json({ error: "An error occurred while fetching data" });
         });
-    });
+    // });
   } catch (error) {
     console.error("Server error:", error);
     res
