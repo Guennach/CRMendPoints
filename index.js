@@ -173,43 +173,32 @@ const sendVerificationSms = (phone) =>{
   });
 }
 
-const CheckVerficationOTP = (code, phone) =>{
+const CheckVerficationOTP = async (code, phone) =>{
   const serviceName = process.env.SERVICE_NAME;
   const url = `${process.env.TWILIO_URL}/${serviceName}/VerificationCheck`;
   const data = qs.stringify({
-    'To': phone,
-    'Code': code
+    To: `${phone}`,
+    Code: `${code}`,
   });
   const auth = {
     username: process.env.USER,
     password: process.env.PASS
   };
  
-  axios.post(url, data, {
-    auth: auth,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-  .then(response => {
+  try {
+    const response = await axios.post(url, data, {
+      auth: auth,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
     console.log(response.data);
-    console.log('Verification successful:', code);
-    console.log('Collected data:', collected_data);
-
-  })
-  .catch(error => {
-    if (error.response) {
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', error.response.headers);
-    } else if (error.request) {
-      console.error('Request data:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    console.error('An error occurred during the request.');
-  }); 
-}
+    return response.data.status === 'approved'; // Assuming 'approved' means success
+  } catch (error) {
+    console.error('Error during OTP verification:', error.response ? error.response.data : error.message);
+    return false;
+  }
+};
 
 
 
@@ -224,19 +213,29 @@ app.post("/sendVerificationSms", (req, res) => {
   }
 });
 
-app.post("/CheckVerficationOTP", (req, res) => {
+app.post("/CheckVerficationOTP", async (req, res) => {
   try {
     const { code, phone } = req.body;
     if (!code) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    CheckVerficationOTP(code, phone);
-    res.status(200).json({ message: "Verification OTP checked successfully" });
+
+    // Log the return value of CheckVerficationOTP
+    const isVerified = await CheckVerficationOTP(code, phone);
+    console.log('CheckVerficationOTP return value:', isVerified);
+
+    if (!isVerified) {
+      console.log('Verification OTP check failed:', code);
+      return res.status(400).json({ error: "Verification OTP check failed" });
+    } else {
+      console.log('Verification OTP checked successfully:', code);
+      return res.status(200).json({ message: "Verification OTP checked successfully" });
+    }
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while checking OTP" });
+    console.error(error.message);
+    return res.status(500).json({ error: "An error occurred while checking OTP" });
   }
 });
-
 
 
 
